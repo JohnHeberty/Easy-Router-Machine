@@ -1,4 +1,6 @@
 cookiecutter-data-science
+BeautifulSoup4
+pySmartDL
 black
 flake8
 ipython
