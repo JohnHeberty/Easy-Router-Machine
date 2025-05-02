@@ -32,10 +32,9 @@ class FileDownloader:
         Raises:
             Exception: If an unexpected error occurs during the download process.
         """
-        obj = SmartDL(url, download_path, timeout=self.timeout)
+        obj = SmartDL(url, download_path, timeout=self.timeout, verify=False, progress_bar=False)
         obj.start(blocking=True)
         if obj.isSuccessful():
-            print(f"Downloaded {url} to {download_path}")
             return True, obj.get_dest()  # Return the path of the downloaded file
         else:
             return False, obj.get_errors()  # Return the error message if download fails

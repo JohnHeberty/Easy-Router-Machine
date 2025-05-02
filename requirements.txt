@@ -1,6 +1,11 @@
-cookiecutter-data-science
+osmium
+python-dotenv
 BeautifulSoup4
 pySmartDL
+loguru
+
+# BASE PROJECT
+cookiecutter-data-science
 black
 flake8
 ipython

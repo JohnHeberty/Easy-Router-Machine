@@ -49,7 +49,11 @@ class ProtobufDownloader:
         Returns:
             None
         """
+        if os.path.exists(self.path_file): 
+            return self.path_file
+        print(f"Baixando arquivo: {self.path_file}")
         html_content = self.fetcher.fetch(self.url)
         download_url = self.extractor.extract(html_content, self.url)
-        self.downloader.download(download_url, self.path_file)
+        status, path = self.downloader.download(download_url, self.path_file)
         print(f"Download concluído e salvo como {self.path_file}")
+        return path if status else None
