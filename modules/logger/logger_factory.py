@@ -1,62 +1,82 @@
-import logging
+from ..singleton import Singleton  # noqa: F401
+from loguru import logger
+from typing import Type
 import os
 
-class LoggerFactory:
+# LoggerFactory utilizando o Singleton via metaclass
+class LoggerFactory(metaclass=Singleton):
     """
-    Responsabilidade: Criar loggers configurados para armazenar logs em arquivos separados para cada nível
-    (DEBUG, INFO, WARNING, ERROR, CRITICAL) e exibir no console.
-    Segue princípios do SOLID, em especial o princípio da responsabilidade única.
+    Fábrica de loggers que utiliza o padrão Singleton.
+    Garante que uma única instância seja criada.
+    Evitando loggers duplicados e mantendo a configuração consistente.
     """
-    def __init__(self, logs_dir: str = os.path.join("data", "logs"), default_level: int = logging.DEBUG):
-        self.logs_dir = logs_dir
+    def __init__(self, logs_dir: str = os.path.join("data", "logs"), default_level: str = "DEBUG") -> None:
+        self.logs_dir: str = logs_dir
         os.makedirs(self.logs_dir, exist_ok=True)
-        self.default_level = default_level
+        self.default_level: str = default_level
+        self.loggers: dict[str, Type[logger]] = {}
 
-    def _create_file_handler_for_level(self, log_filepath: str, level: int) -> logging.Handler:
-        file_handler = logging.FileHandler(log_filepath, encoding="utf-8")
-        file_handler.setLevel(level)
-        # Filtra para registrar apenas mensagens deste nível exato.
-        file_handler.addFilter(lambda record: record.levelno == level)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        file_handler.setFormatter(formatter)
-        return file_handler
-
-    def _create_console_handler(self) -> logging.Handler:
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(self.default_level)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        console_handler.setFormatter(formatter)
-        return console_handler
-
-    def get_logger(self, class_name: str) -> logging.Logger:
+    def _configure_file_sink(self, class_name: str, level: str) -> None:
         """
-        Retorna um logger configurado para a classe especificada.
-        São adicionados handlers de arquivo separados para cada nível de log e um handler para console.
-        Se o logger já tiver handlers configurados, eles serão limpos para evitar duplicação.
+        Configura o sink de arquivo para registrar mensagens de log em arquivos separados por nível.
+        Adiciona um sink para cada nível de log filtrando somente mensagens do logger referente.
         """
-        logger = logging.getLogger(class_name)
-        logger.setLevel(self.default_level)
+        log_filepath: str = os.path.join(self.logs_dir, f"log_{class_name}_{level.lower()}.log")
+        # Remove o sink padrão do loguru para evitar duplicação de mensagens
+        logger.remove()
+        # Configura o sink do console para exibir mensagens de log
+        logger.add(
+            log_filepath,
+            level=level,
+            format="{time:YYYY-MM-DD HH:mm:ss} - {extra[logger_name]} - {level} - {message}",
+            rotation="10 MB",
+            encoding="utf-8",
+            filter=lambda record, lvl=level: record["extra"].get("logger_name") == class_name and record["level"].name == lvl
+        )
 
-        if logger.hasHandlers():
-            logger.handlers.clear()
+    def _configure_console_sink(self, class_name: str) -> None:
+        """
+        Configura o sink do console para exibir mensagens de log.
+        Adiciona um sink que imprime mensagens no console com filtro para este logger.
+        """
+        # Remove o sink padrão do loguru para evitar duplicação de mensagens
+        logger.remove()
+        # Configura o sink do console para exibir mensagens de log
+        logger.add(
+            lambda msg: print(msg, end=""),
+            level=self.default_level,
+            format="{time:YYYY-MM-DD HH:mm:ss} - {extra[logger_name]} - {level} - {message}",
+            filter=lambda record: record["extra"].get("logger_name") == class_name
+        )
 
-        # Adiciona handlers para cada nível
-        levels = [logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL]
+    def get_logger(self, class_name: str) -> Type[logger]:
+        """
+        Retorna o logger configurado de forma única para a classe especificada.
+        Se já existir, retorna o mesmo logger previamente configurado.
+        """
+        if class_name in self.loggers: 
+            return self.loggers[class_name]
+
+        # Configura sinks para cada nível
+        levels: list[str] = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         for level in levels:
-            level_name = logging.getLevelName(level)
-            log_filepath = os.path.join(self.logs_dir, f"log_{class_name}_{level_name}.log")
-            logger.addHandler(self._create_file_handler_for_level(log_filepath, level))
-            
-        # Adiciona handler para o console
-        logger.addHandler(self._create_console_handler())
-        return logger
+            self._configure_file_sink(class_name, level)
 
-# # Exemplo de uso:
+        # Configura sink para o console
+        self._configure_console_sink(class_name)
+        
+        # Cria o logger e o vincula ao nome da classe
+        bound_logger = logger.bind(logger_name=class_name)
+        self.loggers[class_name] = bound_logger
+        return bound_logger
+
+# Exemplo de uso
 # if __name__ == "__main__":
 #     logger_factory = LoggerFactory()
-#     logger = logger_factory.get_logger("MinhaClasseExemplo")
-#     logger.debug("Mensagem de debug")
-#     logger.info("Mensagem de informação")
-#     logger.warning("Mensagem de aviso")
-#     logger.error("Mensagem de erro")
-#     logger.critical("Mensagem crítica")
+#     logger1 = logger_factory.get_logger("MinhaClasseExemplo")
+#     logger2 = logger_factory.get_logger("OutraClasseExemplo")
+#
+#     logger1.debug("Mensagem de debug de MinhaClasseExemplo")
+#     logger1.info("Mensagem de informação de MinhaClasseExemplo")
+#     logger2.warning("Mensagem de aviso de OutraClasseExemplo")
+#     logger2.error("Mensagem de erro de OutraClasseExemplo")
