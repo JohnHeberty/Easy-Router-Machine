@@ -1,7 +1,10 @@
 from .file_downloader import FileDownloader
 from .link_extractor import LinkExtractor
 from .page_fetcher import PageFetcher
+from .osm_convert import convert_pbf_to_osm
 import os
+
+convert_pbf_to_osm = convert_pbf_to_osm
 
 class ProtobufDownloader:
     """
