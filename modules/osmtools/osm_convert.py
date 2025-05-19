@@ -82,8 +82,10 @@ class OSMConvert:
             Raised when expected input files or directories do not exist.
     """
     
-    def __init__(self, minimal_ram: int = 4):
-        
+    def __init__(self, minimal_ram: int = 4, type_osm_in: str = "pbf", type_osm_out: str = "o5m"):
+        self.type_osm_in        = type_osm_in
+        self.type_osm_out       = type_osm_out
+
         # BASE PATH MODULE
         self.base_name          = "osmconvert"
         self.base_path          = "modules"
@@ -91,8 +93,9 @@ class OSMConvert:
         self.folder_bin         = "bin"
         self.base_sys           = platform.system()
         self.folder_bits        = f"{''.join([a for a in platform.architecture()[0] if a.isdigit()])}bits"
-        self.protobufs          = "protobuf"
-        self.path_protobufs     = os.path.join("data","external",self.protobufs)
+        self.path_protobufs     = os.path.join("data","external",self.type_osm_in)
+        os.makedirs(self.path_protobufs, exist_ok=True)
+
         self.path_bin           = os.path.join(
             self.base_path, 
             self.folder_module, 
@@ -101,12 +104,12 @@ class OSMConvert:
             self.base_name, 
             self.folder_bits
         )
-        
+
         # CONDIÇÃO DE AJUSTE DE BINARIOS PARA NÃO SOBRECARREGAR A RAM
         self.ram_system         = math.ceil(psutil.virtual_memory().total / (1024**3))
         if self.ram_system <= minimal_ram:
             self.path_bin       = self.path_bin.replace("64bits","32bits")
-        
+
         # ESCOLHENDO BINARIO DE CONVERSÃO
         self.file_bin           = ""
         self.files_bin          = glob(os.path.join(self.path_bin, self.base_name+"*"))
@@ -125,12 +128,12 @@ class OSMConvert:
 
         # BASE PATH IN FILES
         self.external           = "external"
-        self.folder_in_data     = os.path.join(self.base_data, self.external, self.protobufs)
+        self.folder_in_data     = os.path.join(self.base_data, self.external, self.type_osm_in)
         os.makedirs(self.folder_in_data, exist_ok=True)
-    
+
         # BASE PATH OUT FILES
         self.processed          = "processed"
-        self.folder_out_data    = os.path.join(self.base_data, self.processed, "o5m")
+        self.folder_out_data    = os.path.join(self.base_data, self.processed, self.type_osm_out)
         os.makedirs(self.folder_out_data, exist_ok=True)
 
     @property
@@ -153,7 +156,7 @@ class OSMConvert:
         path = os.path.join(self.folder_in_data, name)
         if os.path.exists(path):
             self._input_file = path
-            self._output_file = os.path.join(self.folder_out_data, os.path.splitext(name)[0] + ".o5m")
+            self._output_file = os.path.join(self.folder_out_data, os.path.splitext(name)[0] + f".{self.type_osm_out}")
         else:
             raise FileExistsError(f"input_file not exists in {self.folder_in_data}")
 
