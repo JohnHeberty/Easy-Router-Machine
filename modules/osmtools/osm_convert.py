@@ -87,11 +87,12 @@ class OSMConvert:
         # BASE PATH MODULE
         self.base_name          = "osmconvert"
         self.base_path          = "modules"
-        self.folder_module      = "geofabrik"
+        self.folder_module      = "osmtools"
         self.folder_bin         = "bin"
         self.base_sys           = platform.system()
         self.folder_bits        = f"{''.join([a for a in platform.architecture()[0] if a.isdigit()])}bits"
-        self.path_protobufs     = os.path.join("data","external","protobuf")
+        self.protobufs          = "protobuf"
+        self.path_protobufs     = os.path.join("data","external",self.protobufs)
         self.path_bin           = os.path.join(
             self.base_path, 
             self.folder_module, 
@@ -121,15 +122,16 @@ class OSMConvert:
 
         # BASE PATH FILES
         self.base_data          = "data"
-        self.protobufs          = "protobuf"
 
         # BASE PATH IN FILES
         self.external           = "external"
         self.folder_in_data     = os.path.join(self.base_data, self.external, self.protobufs)
+        os.makedirs(self.folder_in_data, exist_ok=True)
     
         # BASE PATH OUT FILES
         self.processed          = "processed"
-        self.folder_out_data    = os.path.join(self.base_data, self.processed, self.protobufs)
+        self.folder_out_data    = os.path.join(self.base_data, self.processed, "o5m")
+        os.makedirs(self.folder_out_data, exist_ok=True)
 
     @property
     def input_file(self) -> str:
@@ -151,6 +153,7 @@ class OSMConvert:
         path = os.path.join(self.folder_in_data, name)
         if os.path.exists(path):
             self._input_file = path
+            self._output_file = os.path.join(self.folder_out_data, os.path.splitext(name)[0] + ".o5m")
         else:
             raise FileExistsError(f"input_file not exists in {self.folder_in_data}")
 
@@ -266,25 +269,6 @@ class OSMConvert:
             raise TypeError("hash_memory must be an integer")
         self._hash_memory = ram
 
-    @property
-    def output_file(self) -> str:
-        """
-        Returns the output file path.
-
-        Returns:
-            str: The output file path.
-        """
-        return self._output_file
-
-    @output_file.setter
-    def output_file(self, name: str) -> None:
-        if not isinstance(name, str):
-            raise TypeError("output_file must be a string")
-        if os.path.exists(self.folder_out_data):
-            self._output_file = os.path.join(self.folder_out_data, name)
-        else:
-            raise FileExistsError(f"folder: '{self.folder_out_data}' not exists")
-
     def run(self):
         """
         Executes an external command by constructing and running a list of command-line arguments.
@@ -302,34 +286,58 @@ class OSMConvert:
              non-zero exit status).
         """
         # Constroi a lista de argumentos com validação dos atributos
-        args = [f"./{self.file_bin}", self._input_file]
+        self.file_bin = f"./{self.file_bin}" if self.base_sys == "Linux" else self.file_bin
+        self.args = [self.file_bin, self._input_file]
 
         # Para opções booleanas, incluímos o parâmetro somente se existir e for True.
         if hasattr(self, "_drop_author") and self._drop_author:
-            args.append("--drop-author")
+            self.args.append("--drop-author")
         if hasattr(self, "_drop_version") and self._drop_version:
-            args.append("--drop-version")
+            self.args.append("--drop-version")
         if hasattr(self, "_verbose") and self._verbose:
-            args.append("--verbose")
+            self.args.append("--verbose")
         if hasattr(self, "_complete_ways") and self._complete_ways:
-            args.append("--complete-ways")
+            self.args.append("--complete-ways")
         if hasattr(self, "_complete_multipolygons") and self._complete_multipolygons:
-            args.append("--complete-multipolygons")
+            self.args.append("--complete-multipolygons")
 
         # Para opções numéricas, incluímos o parâmetro se estiver definido.
         if hasattr(self, "_max_objects"):
-            args.append(f"--max-objects={self._max_objects}")
+            self.args.append(f"--max-objects={self._max_objects}")
         if hasattr(self, "_hash_memory"):
-            args.append(f"--hash-memory={self._hash_memory}")
+            self.args.append(f"--hash-memory={self._hash_memory}")
 
         # Define o arquivo de saída
-        args.append(f"-o={self._output_file}")
+        self.args.append(f"-o={self._output_file}")
 
         # Executa o comando formado
         t_start     = time.time()
-        result      = subprocess.run(args, capture_output=True, text=True, check=True)
+        result      = subprocess.run(self.args, capture_output=True, text=True, check=True)
         t_current   = time.time() - t_start
-        end_shell   = result.stdout       if result.stdout != '' else ''
-        end_shell   = end_shell + "\n"    if result.stderr != '' else end_shell
-        end_shell   = f"{end_shell} \nTempo de Processamento: {t_current}s"
-        print(end_shell)
+
+        if self.verbose:
+            print(f"Tempo do Processamento: {t_current}s")
+
+        stdout      = result.stdout
+        stderr      = result.stderr
+
+        if stderr != "" and self.verbose:
+            print("ERROR: ", stderr)
+            return False
+        if stdout != "" and self.verbose:
+            print("Result: ", stdout)
+            return True
+
+# OSMC = OSMConvert()
+
+# OSMC.input_file             = 'brazil-latest.osm.pbf'
+# OSMC.drop_author            = True
+# OSMC.drop_version           = True
+# OSMC.verbose                = True
+# OSMC.complete_ways          = True
+# OSMC.complete_multipolygons = True
+# OSMC.max_objects            = 500000000
+# OSMC.hash_memory            = 4096
+# OSMC.output_file            = 'brazil-latest.osm.pbf'
+
+# OSMC.run()

@@ -186,5 +186,6 @@ cython_debug/
 .pypirc
 
 # protobuf
+*.o5m
 *.pbf
 *.osm
