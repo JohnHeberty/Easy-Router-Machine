@@ -1,26 +1,23 @@
-osmium
-python-dotenv
 BeautifulSoup4
 pySmartDL
-loguru
 
 # BASE PROJECT
-cookiecutter-data-science
-black
-flake8
-ipython
-isort
+# cookiecutter-data-science
+# black
+# flake8
+# ipython
+# isort
 jupyterlab
 loguru
 matplotlib
-mkdocs
+# mkdocs
 notebook
 numpy
 pandas
 pip
-pytest
+# pytest
 python-dotenv
-scikit-learn
-tqdm
-typer
--e .
+# scikit-learn
+# tqdm
+# typer
+# -e .

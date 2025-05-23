@@ -81,27 +81,32 @@ class OSMConvert:
         FileExistsError:
             Raised when expected input files or directories do not exist.
     """
-    
-    def __init__(self, minimal_ram: int = 4, type_osm_in: str = "pbf", type_osm_out: str = "o5m"):
+
+    def __init__(self, 
+            minimal_ram: int = 4,
+            base_path: str = os.path.join("data","external"),
+            type_osm_in: str = "pbf",
+            type_osm_out: str = "o5m"
+        ):
         self.type_osm_in        = type_osm_in
         self.type_osm_out       = type_osm_out
 
         # BASE PATH MODULE
         self.base_name          = "osmconvert"
-        self.base_path          = "modules"
+        self.base_path          = base_path
         self.folder_module      = "osmtools"
         self.folder_bin         = "bin"
         self.base_sys           = platform.system()
         self.folder_bits        = f"{''.join([a for a in platform.architecture()[0] if a.isdigit()])}bits"
-        self.path_protobufs     = os.path.join("data","external",self.type_osm_in)
-        os.makedirs(self.path_protobufs, exist_ok=True)
+        self.folder_in_data     = os.path.join(self.base_path, self.type_osm_in)
+        os.makedirs(self.folder_in_data, exist_ok=True)
 
         self.path_bin           = os.path.join(
-            self.base_path, 
-            self.folder_module, 
-            self.folder_bin, 
-            self.base_sys, 
-            self.base_name, 
+            "modules",
+            self.folder_module,
+            self.folder_bin,
+            self.base_sys,
+            self.base_name,
             self.folder_bits
         )
 
@@ -125,11 +130,6 @@ class OSMConvert:
 
         # BASE PATH FILES
         self.base_data          = "data"
-
-        # BASE PATH IN FILES
-        self.external           = "external"
-        self.folder_in_data     = os.path.join(self.base_data, self.external, self.type_osm_in)
-        os.makedirs(self.folder_in_data, exist_ok=True)
 
         # BASE PATH OUT FILES
         self.processed          = "processed"
