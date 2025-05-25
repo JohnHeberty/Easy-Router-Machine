@@ -22,7 +22,7 @@ class ProtobufDownloader:
             country: str    = "brazil",
             path_data: str  = "data",
             path_output: str= "external",
-            path_module: str= "protobuf",
+            path_module: str= "pbf",
             timeout: int    = 10
         ):
         self.url            = url

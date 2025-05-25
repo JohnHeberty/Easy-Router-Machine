@@ -96,7 +96,7 @@ class OSMfilter:
             self._output_file = os.path.join(self.folder_in_data, os.path.splitext(name)[0] + ".filtered.streets.o5m")
         else:
             raise FileExistsError(f"input_file not exists in {self.folder_in_data}")
-    
+
     def run(self):
         """
         Executes a subprocess command to filter OpenStreetMap (OSM) data based on specified categories.

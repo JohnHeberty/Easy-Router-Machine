@@ -7,98 +7,29 @@ import math
 import os
 
 class OSMConvert:
-    """
-    OSMConvert
-    This class provides an interface for converting OpenStreetMap (OSM) data using an external binary
-    conversion tool. Depending on the system’s memory, it selects between a 32-bit or 64-bit binary and 
-    configures the necessary execution parameters.
-    Initialization:
-        OSMConvert(minimal_ram: int = 4)
-            minimal_ram: An integer representing the minimum RAM in GB required to run the 64-bit binary.
-                         If system memory (in GB) is less than or equal to this value, a 32-bit binary will be used.
-    Attributes:
-        base_name (str):
-            The base name for the conversion binary.
-        base_path (str):
-            The root folder for the modules.
-        folder_module (str):
-            The name of the module folder.
-        folder_bin (str):
-            The subfolder containing the binary executable.
-        base_sys (str):
-            The operating system name as returned by the platform.
-        folder_bits (str):
-            A folder name determined by the system architecture (e.g., "64bits" or "32bits").
-        path_protobufs (str):
-            The path to the external protobuf data folder.
-        path_bin (str):
-            The full path to the binary based on system information and configuration.
-        file_bin (str):
-            The specific binary file chosen for the conversion based on matching conditions and system RAM.
-        ram_system (int):
-            The total RAM (in GB) of the current system.
-        base_data (str):
-            The base directory for data files.
-        protobufs (str):
-            The folder name for protobuf files.
-        external (str):
-            The folder used for external data.
-        folder_in_data (str):
-            The complete path to the input data directory.
-        processed (str):
-            The folder name for processed (output) data.
-        folder_out_data (str):
-            The complete path to the output data directory.
-    Properties:
-        input_file (str):
-            A property to get or set the input file path. The setter verifies that the file exists under 
-            the expected input directory.
-        drop_author (bool):
-            A flag indicating whether the author information should be dropped; must be a boolean.
-        drop_version (bool):
-            A flag indicating whether the version information should be dropped; must be a boolean.
-        verbose (bool):
-            A flag to enable verbose mode; must be a boolean.
-        complete_ways (bool):
-            A flag to determine if complete ways should be processed; must be a boolean.
-        complete_multipolygons (bool):
-            A flag to determine if complete multipolygon ways should be processed; must be a boolean.
-        max_objects (int):
-            Specifies the maximum number of objects to process; must be an integer.
-        hash_memory (int):
-            Specifies the memory allocated for hash operations; must be an integer.
-        output_file (str):
-            A property to get or set the output file path. The setter validates that the designated output 
-            directory exists.
-    Methods:
-        run():
-            Constructs the command-line arguments based on the current configuration and selected properties,
-            then executes the binary conversion tool as a subprocess.
-            It captures and prints the output along with the processing time.
-    Exceptions:
-        TypeError:
-            Raised by setter methods when the provided value does not match the expected type.
-        FileExistsError:
-            Raised when expected input files or directories do not exist.
-    """
 
-    def __init__(self, 
+    def __init__(self,
             minimal_ram: int = 4,
-            base_path: str = os.path.join("data","external"),
+            base_path_in: str = os.path.join("data","external"),
+            base_path_out: str = os.path.join("data","processed"),
             type_osm_in: str = "pbf",
             type_osm_out: str = "o5m"
         ):
+
+        self.base_path_in       = base_path_in
+        self.base_path_out      = base_path_out
+
         self.type_osm_in        = type_osm_in
         self.type_osm_out       = type_osm_out
 
         # BASE PATH MODULE
         self.base_name          = "osmconvert"
-        self.base_path          = base_path
         self.folder_module      = "osmtools"
         self.folder_bin         = "bin"
         self.base_sys           = platform.system()
-        self.folder_bits        = f"{''.join([a for a in platform.architecture()[0] if a.isdigit()])}bits"
-        self.folder_in_data     = os.path.join(self.base_path, self.type_osm_in)
+        platform_bits           = [a for a in platform.architecture()[0] if a.isdigit()]
+        self.folder_bits        = f"{''.join(platform_bits)}bits"
+        self.folder_in_data     = os.path.join(self.base_path_in, self.type_osm_in)
         os.makedirs(self.folder_in_data, exist_ok=True)
 
         self.path_bin           = os.path.join(
@@ -128,12 +59,8 @@ class OSMConvert:
             self.file_bin = matching_bins[0] if matching_bins else self.files_bin[0]
             del(matching_bins)
 
-        # BASE PATH FILES
-        self.base_data          = "data"
-
         # BASE PATH OUT FILES
-        self.processed          = "processed"
-        self.folder_out_data    = os.path.join(self.base_data, self.processed, self.type_osm_out)
+        self.folder_out_data    = os.path.join(self.base_path_out, self.type_osm_out)
         os.makedirs(self.folder_out_data, exist_ok=True)
 
     @property
