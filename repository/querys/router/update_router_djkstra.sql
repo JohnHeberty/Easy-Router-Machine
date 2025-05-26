@@ -1,0 +1,1 @@
+UPDATE router_time SET Algorithm = 'Djkstra';

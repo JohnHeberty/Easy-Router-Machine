@@ -21,6 +21,6 @@ origem AS (
 
 -- Agora você deve fazer a junção adequada entre as tabelas
 SELECT ST_ConcaveHull(ST_Collect(Geometry)) as Buffer
-FROM NetworkTime nc, origem o
+FROM router_time nc, origem o
 WHERE
 	NodeFrom = o.Node_From AND Cost <= 1000

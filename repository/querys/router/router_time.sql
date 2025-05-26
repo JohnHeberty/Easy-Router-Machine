@@ -1,3 +1,4 @@
+-- https://www.gaia-gis.it/fossil/libspatialite/wiki?name=VirtualRouting
 WITH vars AS (
     SELECT 
         -16.7802859 AS lat_o, 	-- latitude de origem
@@ -37,6 +38,6 @@ destino AS (
 
 -- Agora você deve fazer a junção adequada entre as tabelas
 SELECT *
-FROM NetworkTime nc, origem o, destino d
+FROM router_time nc, origem o, destino d
 WHERE
 	NodeFrom = o.Node_From AND NodeTo = d.Node_To
