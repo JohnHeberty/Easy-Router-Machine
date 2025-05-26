@@ -6,9 +6,8 @@ import subprocess
 import os
 # from modules.logger.logger_factory import LoggerFactory
 
-TOOLS_PATH = os.path.join(
-    os.path.dirname(__file__),
-    "bin", "Windows", "spatialite", "tools"
+TOOLS_PATH = os.path.join(# os.path.dirname(__file__)
+    "modules", "osmtools", "bin", "Windows", "spatialite", "tools"
 )
 
 class SpatialiteBase:
@@ -28,7 +27,7 @@ class SpatialiteBase:
         if not os.path.exists(self.exe_path):
             raise FileNotFoundError(f"Executable not found: {self.exe_path}")
 
-    def run(self, args=None, capture_output=True, check=True, **kwargs):
+    def run(self, args: list, capture_output=True, check=True, **kwargs):
         """
         Executa o binário com os argumentos fornecidos via subprocess.
         Args:
@@ -39,22 +38,30 @@ class SpatialiteBase:
         Returns:
             subprocess.CompletedProcess: Resultado da execução do subprocess.
         Raises:
-            subprocess.CalledProcessError: Se o comando retornar código diferente de zero e check=True.
+            subprocess.CalledProcessError: Se o comando retornar código 
+            diferente de zero e check=True.
         """
-        if args is None:
-            args = []
         cmd = [self.exe_path] + args
+        print(f"Running command: {' '.join(cmd)}")
         # self.logger.info(f"Running: {' '.join(cmd)}")
         try:
-            result = subprocess.run(cmd, capture_output=capture_output, check=check, text=True, **kwargs)
+            result = subprocess.run(
+                cmd,
+                capture_output=capture_output,
+                check=check,
+                text=True,
+                **kwargs
+            )
+            print(f"stdout: {result.stdout}")
             # self.logger.info(f"stdout: {result.stdout}")
             if result.stderr:
-                pass
+                print(f"stderr: {result.stderr}")
                 # self.logger.error(f"stderr: {result.stderr}")
             return result
         except subprocess.CalledProcessError as e:
+            print(f"Error executing {self.exe_path}: {e}")
             # self.logger.error(f"Execution failed: {e}")
-            pass #raise
+            #raise
 
 # Classes específicas para cada .exe
 class SpatialiteXmlValidator(SpatialiteBase):
