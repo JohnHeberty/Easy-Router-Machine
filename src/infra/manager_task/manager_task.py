@@ -29,7 +29,8 @@ class ManagerTask(IManagerTask):
         return task
 
     def StartWorker(self):
-        for id in range(os.cpu_count() - 2):
+        #for id in range(os.cpu_count() - 2):
+        for id in range(1): # uma Thread
             self.InfoWorkers[id] = {}
             self.InfoWorkers[id]["Thread"] = threading.Thread(
                 target=self.Worker,

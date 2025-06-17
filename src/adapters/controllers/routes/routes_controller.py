@@ -1,16 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Dict
 
-from src.adapters.controllers.routes.routes_depends import *
 from src.adapters.controllers.routes.models.routes_dto_response import RoutesResponseDTO
+from src.adapters.controllers.routes.models.routes_dto import RoutesDTO
+from src.adapters.controllers.routes.routes_depends import get_routes_use_case
+from src.app.use_case.routes.routes_use_case import RoutesUserCase
+
 router = APIRouter()
 
-
-@router.get("/routes/", response_model=RoutesResponseDTO, tags=['router'])  
-async def filials(data: FilialUseCase =  Depends(get_filial_use_case)) -> Dict:
+@router.post("/routes/", response_model=RoutesResponseDTO, tags=['router'])  
+async def routes(router: RoutesDTO, data: RoutesUserCase =  Depends(get_routes_use_case)) -> Dict:
     try:
-        response = data.execute()
+        response = data.execute(router.latitude_inicio, router.longitude_inicio, router.latitude_fim, router.longitude_fim)
         return RoutesResponseDTO(**response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    

@@ -5,6 +5,9 @@ import logging
 from src.adapters.repositories_interface.login.user_repository_interface import IUserRepository
 from src.infra.db.interfaces.manager_task_interface import IManagerTask
 
+
+
+
 ### EXEMPLO DE USER REPORITOR PARA FILIAIS
 class UserRepository(IUserRepository):
     def __init__(self, manager_task: IManagerTask) -> None:

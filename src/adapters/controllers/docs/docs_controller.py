@@ -5,7 +5,7 @@ from fastapi.security import HTTPBasic
 security = HTTPBasic()
 router = APIRouter()
 
-prefix = '/v0' ## lembrar de trocar o prefixo
+prefix = '/router/v0' ## lembrar de trocar o prefixo
 
 @router.get("/docs", tags=['Documentation'])
 async def get_documentation():

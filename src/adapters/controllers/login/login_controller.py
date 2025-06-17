@@ -16,3 +16,4 @@ async def filials(data: FilialUseCase =  Depends(get_filial_use_case)) -> Dict:
         return FilialResponseDTO(**response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+

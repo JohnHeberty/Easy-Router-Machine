@@ -1,29 +1,30 @@
 import pandas as pd #type: ignore
 import logging
 
-from src.infra.db.settings.connection import PGconnectionHandler
+from src.infra.db.settings.connection import SQliteConnectionHandler
 from src.infra.db.interfaces.connection_repository_interface import IDatabaseRepository
 
 class DatabaseRepository(IDatabaseRepository):
     
-    
     @classmethod
-    def run_query(cls, query: str, dados: list = None, will_return: bool = False):
+    def run_query(cls, query: str, will_return: bool = False):
         try:
-            # db_handler = PGconnectionHandler()
-            # with db_handler as conn:
-            #     if will_return:
-            #         df = pd.read_sql(query, conn, params=dados)
-            #         conn.commit()
-            #         return df
-            #     else:
-            #         cursor = conn.cursor()
-            #         cursor.execute(query, dados)
-            #         conn.commit()
-            #         return True
-            
-            return "TESTE"
+            db_handler = SQliteConnectionHandler()
 
+            with db_handler as conn:
+                if will_return:
+                    cursor = conn.cursor()
+                    cursor.execute(query)
+                    rows = cursor.fetchall()
+                    columns = [desc[0] for desc in cursor.description]
+                    df = pd.DataFrame(rows, columns=columns)
+                    return df
+                else:
+                    cursor = conn.cursor()
+                    cursor.execute(query)
+                    conn.commit()
+                    return True
+                
         except Exception as e:
-            print(f'Erro ao executar a query: {query}\nCom argumentos: {dados}\nErro: {e}')
+            print(f'Erro ao executar a query: {query}\'')
             return False

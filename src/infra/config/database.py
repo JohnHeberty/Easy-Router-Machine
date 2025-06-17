@@ -19,3 +19,7 @@ configPG = {
     "password"  : 1,
     "port"      : 1,
 }
+
+configSQlite = {
+    "path_database"  : os.getenv("PATH_DATABASE_SQLITE"),
+}

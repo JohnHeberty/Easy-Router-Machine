@@ -1,9 +1,10 @@
 from typing import Optional
 import psycopg2 # type: ignore
+import sqlite3
 
 from src.infra.db.interfaces.connection_interface import IDBConnectionHandler
 from src.infra.config import configPG
-
+from src.infra.config import configSQlite
 
 class PGconnectionHandler(IDBConnectionHandler):
     def __init__(self) -> None:
@@ -37,3 +38,40 @@ class PGconnectionHandler(IDBConnectionHandler):
         if self.__conn_pg:
             self.__conn_pg.close()
             self.__conn_pg = None
+
+
+class SQliteConnectionHandler:
+    def __init__(self) -> None:
+        self.__conn_sqlite: Optional[sqlite3.Connection] = None
+        self.db_path = configSQlite["path_database"]
+        
+    def __create_conn_sqlite(self) -> Optional[sqlite3.Connection]:
+        """Cria conexão com o banco SQLite."""
+        try:
+            print(self.db_path)
+            self.__conn_sqlite = sqlite3.connect(
+                self.db_path,
+                check_same_thread=False
+            )
+            self.__conn_sqlite.enable_load_extension(True)
+            self.__conn_sqlite.load_extension("mod_spatialite.dll")
+            self.__conn_sqlite.execute('SELECT load_extension("mod_spatialite.dll")')
+            
+            return self.__conn_sqlite
+        
+        except Exception as e:
+            print(f"Erro ao conectar ao SQLite: {e}")
+            return None
+
+    def get_conn(self) -> Optional[sqlite3.Connection]:
+        if self.__conn_sqlite is None:
+            return self.__create_conn_sqlite()
+        return self.__conn_sqlite
+
+    def __enter__(self) -> Optional[sqlite3.Connection]:
+        return self.get_conn()
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        if self.__conn_sqlite:
+            self.__conn_sqlite.close()
+            self.__conn_sqlite = None

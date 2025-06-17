@@ -1,6 +1,6 @@
 from src.infra.db.repositories.connection_repository import DatabaseRepository
-from src.infra.db.repositories.user_repository import UserRepository
-from src.app.use_case.login.filiais_use_case import FilialUseCase
+from src.infra.db.repositories.routes_repository import RoutesRepository
+from src.app.use_case.routes.routes_use_case import RoutesUserCase
 from src.adapters.task_service.task import TaskService
 
 # Instancia do task do manager task
@@ -10,13 +10,13 @@ def create_task_service() -> TaskService:
 
 
 ### Instancias dos Repositorios
-def get_login_repository() -> UserRepository:
-    '''Cria e retorna o Repositório de login com o worker já instanciado.'''
+def get_routes_repository() -> RoutesRepository:
+    '''Cria e retorna o Repositório de routes com o worker já instanciado.'''
     task_service = create_task_service()
-    return UserRepository(task_service.get_worker())
+    return RoutesRepository(task_service.get_worker())
 
 
 ## Instancias uso de caso
-def get_filial_use_case()-> FilialUseCase:
-    '''Instancia e retorna o caso de uso para Filials.'''
-    return FilialUseCase(get_login_repository())
+def get_routes_use_case()-> RoutesUserCase:
+    '''Instancia e retorna o caso de uso para routes.'''
+    return RoutesUserCase(get_routes_repository())

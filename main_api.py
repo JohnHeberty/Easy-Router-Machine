@@ -7,7 +7,7 @@ import warnings
 
 from src.adapters.controllers.login.login_controller import router as login_router
 from src.adapters.controllers.docs.docs_controller import router as router_docs
-
+from src.adapters.controllers.routes.routes_controller import router as routes_router
 
 warnings.filterwarnings('ignore')
 
@@ -15,7 +15,7 @@ app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 main_router = APIRouter()
 
-prefix_api = '/v0'
+prefix_api = '/router/v0'
 version = '0.1.0'
 
 
@@ -44,3 +44,5 @@ app.include_router(main_router, prefix=prefix_api)
 
 app.include_router(login_router, prefix=prefix_api)
 app.include_router(router_docs, prefix=prefix_api)
+app.include_router(routes_router, prefix=prefix_api)
+
