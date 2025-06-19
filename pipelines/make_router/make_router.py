@@ -85,6 +85,11 @@ if __name__ == "__main__":
         "-vt",
         "router_time",
         "--overwrite-output",
-        "--unidirectional"
+        "--bidirectional",
+        "--oneway-tofrom", 
+        "oneway_tofrom",
+        "--oneway-fromto", 
+        "oneway_fromto"
+
     ]
     SP_NET.run(args=args)
