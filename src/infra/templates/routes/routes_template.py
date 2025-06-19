@@ -11,7 +11,7 @@ WITH vars AS (
         {} AS lat_d,  	-- latitude de destino
         {} AS long_d,   -- longitude de destino
 
-        0.5 AS Box_LatLong      -- Usado para realizar filtro, se diminir aumenta velocidade mas pode não localizar ponto
+        0.1 AS Box_LatLong      -- Usado para realizar filtro, se diminir aumenta velocidade mas pode não localizar ponto
 ),
 origem AS (
     SELECT node_id as Node_From

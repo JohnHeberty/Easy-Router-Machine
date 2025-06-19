@@ -1,10 +1,14 @@
 from typing import Optional
 import psycopg2 # type: ignore
 import sqlite3
+import os
 
 from src.infra.db.interfaces.connection_interface import IDBConnectionHandler
-from src.infra.config import configPG
 from src.infra.config import configSQlite
+from src.infra.config import configPG 
+from src.infra.config import mod_spatialite
+
+
 
 class PGconnectionHandler(IDBConnectionHandler):
     def __init__(self) -> None:
@@ -44,18 +48,24 @@ class SQliteConnectionHandler:
     def __init__(self) -> None:
         self.__conn_sqlite: Optional[sqlite3.Connection] = None
         self.db_path = configSQlite["path_database"]
+        self.mod_path = mod_spatialite["mod_spatialite_path"]
+        print(self.mod_path)
+        self.path_init = os.getcwd()
+
+
         
     def __create_conn_sqlite(self) -> Optional[sqlite3.Connection]:
         """Cria conexão com o banco SQLite."""
         try:
-            print(self.db_path)
             self.__conn_sqlite = sqlite3.connect(
                 self.db_path,
                 check_same_thread=False
             )
+            os.chdir(self.mod_path)
             self.__conn_sqlite.enable_load_extension(True)
             self.__conn_sqlite.load_extension("mod_spatialite.dll")
             self.__conn_sqlite.execute('SELECT load_extension("mod_spatialite.dll")')
+            os.chdir(self.path_init)
             
             return self.__conn_sqlite
         

@@ -23,3 +23,7 @@ configPG = {
 configSQlite = {
     "path_database"  : os.getenv("PATH_DATABASE_SQLITE"),
 }
+
+mod_spatialite = {
+    "mod_spatialite_path"  : os.getenv("PATH_MOD_SPATIALITE"),
+}

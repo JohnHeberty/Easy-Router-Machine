@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class RoutesDTO(BaseModel):
-    latitude_inicio: str
-    longitude_inicio: str
-    latitude_fim: str
-    longitude_fim: str
+    latitude_origem: str
+    longitude_origem: str
+    latitude_destino: str
+    longitude_destino: str

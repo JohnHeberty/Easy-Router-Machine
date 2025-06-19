@@ -84,6 +84,7 @@ if __name__ == "__main__":
         "table_router_time",
         "-vt",
         "router_time",
-        "--overwrite-output"
+        "--overwrite-output",
+        "--unidirectional"
     ]
     SP_NET.run(args=args)

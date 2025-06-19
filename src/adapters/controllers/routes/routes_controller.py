@@ -11,7 +11,7 @@ router = APIRouter()
 @router.post("/routes/", response_model=RoutesResponseDTO, tags=['router'])  
 async def routes(router: RoutesDTO, data: RoutesUserCase =  Depends(get_routes_use_case)) -> Dict:
     try:
-        response = data.execute(router.latitude_inicio, router.longitude_inicio, router.latitude_fim, router.longitude_fim)
+        response = data.execute(router.latitude_origem, router.longitude_origem, router.latitude_destino, router.longitude_destino)
         return RoutesResponseDTO(**response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
