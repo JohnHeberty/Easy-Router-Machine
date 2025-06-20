@@ -5,7 +5,6 @@ from fastapi.responses import JSONResponse
 from fastapi import FastAPI
 import warnings
 
-from src.adapters.controllers.login.login_controller import router as login_router
 from src.adapters.controllers.docs.docs_controller import router as router_docs
 from src.adapters.controllers.routes.routes_controller import router as routes_router
 
@@ -41,8 +40,6 @@ async def openapi():
 
 
 app.include_router(main_router, prefix=prefix_api)
-
-app.include_router(login_router, prefix=prefix_api)
 app.include_router(router_docs, prefix=prefix_api)
 app.include_router(routes_router, prefix=prefix_api)
 
