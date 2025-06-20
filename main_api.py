@@ -7,6 +7,8 @@ import warnings
 
 from src.adapters.controllers.docs.docs_controller import router as router_docs
 from src.adapters.controllers.routes.routes_controller import router as routes_router
+from src.app.helpers.api_functions import get_prefix_version, get_version
+
 
 warnings.filterwarnings('ignore')
 
@@ -14,8 +16,9 @@ app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 main_router = APIRouter()
 
-prefix_api = '/router/v0'
-version = '0.1.0'
+
+version = get_version()
+prefix_api = get_prefix_version()
 
 
 app.add_middleware(
