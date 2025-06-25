@@ -7,6 +7,7 @@ from src.infra.db.interfaces.connection_interface import IDBConnectionHandler
 from src.infra.config import configSQlite
 from src.infra.config import configPG 
 from src.infra.config import mod_spatialite
+from src.infra.config.api_config import api_config
 
 
 
@@ -49,7 +50,11 @@ class SQliteConnectionHandler:
         self.__conn_sqlite: Optional[sqlite3.Connection] = None
         self.db_path = configSQlite["path_database"]
         self.mod_path = mod_spatialite["mod_spatialite_path"]
-        print(self.mod_path)
+        self.flag_exec_windows = False
+
+        if api_config["execute_windows"] in ("True", "true", True):
+            self.flag_exec_windows = True 
+            
         self.path_init = os.getcwd()
 
 
@@ -61,12 +66,19 @@ class SQliteConnectionHandler:
                 self.db_path,
                 check_same_thread=False
             )
-            os.chdir(self.mod_path)
             self.__conn_sqlite.enable_load_extension(True)
-            self.__conn_sqlite.load_extension("mod_spatialite.dll")
-            self.__conn_sqlite.execute('SELECT load_extension("mod_spatialite.dll")')
-            os.chdir(self.path_init)
-            
+
+            if self.flag_exec_windows:
+                print("WINDOWS")
+                os.chdir(self.mod_path)
+                self.__conn_sqlite.load_extension(f'{self.mod_path}/mod_spatialite.dll')
+                self.__conn_sqlite.execute('SELECT load_extension("mod_spatialite.dll")')
+                os.chdir(self.path_init)
+            else:
+                print("LINUX")
+                self.__conn_sqlite.load_extension(f'{self.mod_path}/mod_spatialite.so')
+                self.__conn_sqlite.execute('SELECT load_extension("mod_spatialite.so")')
+
             return self.__conn_sqlite
         
         except Exception as e:

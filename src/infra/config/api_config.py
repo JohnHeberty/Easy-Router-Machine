@@ -5,7 +5,8 @@ load_dotenv()
 
 api_config = {
     "version_api": os.getenv("API_ROUTER_VERSION"),
-    "prefix_api": os.getenv("API_PREFIX", "false")
+    "prefix_api": os.getenv("API_PREFIX", "false"),
+    "execute_windows": os.getenv("WINDOWS_EXECUTE", "false")
 }
 
 login = {

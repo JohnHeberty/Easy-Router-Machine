@@ -26,5 +26,6 @@ class DatabaseRepository(IDatabaseRepository):
                     return True
                 
         except Exception as e:
+            print(str(e))
             print(f'Erro ao executar a query: {query}\'')
             return False
