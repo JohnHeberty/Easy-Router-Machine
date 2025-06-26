@@ -15,7 +15,7 @@ prefix_api = get_prefix_version()
 async def get_documentation(username: str = Depends(verify_request)):
     return get_swagger_ui_html(
         openapi_url=f"{prefix_api}/openapi.json",
-        title="API PEX Docs"
+        title="API Router - Disbral - Docs"
 )
 
 @router.get("/redoc", include_in_schema=False, tags=['Documentation'])
