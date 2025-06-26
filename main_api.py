@@ -8,7 +8,8 @@ import warnings
 from src.adapters.controllers.docs.docs_controller import router as router_docs
 from src.adapters.controllers.routes.routes_controller import router as routes_router
 from src.app.helpers.api_functions import get_prefix_version, get_version
-
+from src.infra.db.repositories.connection_repository import DatabaseRepository
+from src.adapters.task_service.task import TaskService
 
 warnings.filterwarnings('ignore')
 
@@ -28,6 +29,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @main_router.get("/", tags=['API Service'])
 def read_root():

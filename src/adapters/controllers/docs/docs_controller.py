@@ -1,6 +1,8 @@
+
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from src.domain.authorization.request_api import verify_request
 from src.app.helpers.api_functions import get_prefix_version
+
 from fastapi.security import HTTPBasic
 from fastapi import APIRouter, Depends
 

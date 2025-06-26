@@ -20,3 +20,4 @@ async def routes(router: RoutesDTO, data: RoutesUserCase =  Depends(get_routes_u
             status_code=500,
             content={"STATUS": False, "DADOS": [], "ERRO": str(e)}
 )
+    

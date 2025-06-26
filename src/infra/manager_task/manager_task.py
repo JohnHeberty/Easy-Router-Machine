@@ -4,6 +4,7 @@ import os
 
 from src.infra.db.interfaces.connection_repository_interface import IDatabaseRepository
 from src.infra.db.interfaces.manager_task_interface import IManagerTask
+from src.infra.db.settings.connection import SQliteConnectionHandler
 
 class Task:
     def __init__(self, query, return_):
@@ -47,13 +48,16 @@ class ManagerTask(IManagerTask):
                         break
 
     def Worker(self, id, Jobs_at_Queue):
+        db_handler = self.database.get_connection_db()
         self.InfoWorkers[id]["OK"] = True
-        while True:
-            task = Jobs_at_Queue.get()
-            if task.return_ == True:
-                dataframe = self.database.run_query(task.query, task.return_)
-                task.set_result(dataframe)
-            else:
-                status = self.database.run_query(task.query, task.return_)
-                task.set_result(status)
-   
+        try:
+            while True:
+                task = Jobs_at_Queue.get()
+                if task.return_:
+                    dataframe = self.database.run_query(db_handler, task.query, task.return_)
+                    task.set_result(dataframe)
+                else:
+                    status = self.database.run_query(db_handler, task.query, task.return_)
+                    task.set_result(status)
+        finally:
+            db_handler.close()

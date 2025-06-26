@@ -13,6 +13,7 @@ class RoutesUserCase:
     def execute(self, latitude_inicio, longitude_inicio, latitude_fim, longitude_fim)-> Dict[str, Dict]:
         '''Retorna uma rota em geojson para o Usuario'''
         try:
+            
             result_df = self.route.get_route(self.check_numeric(latitude_inicio), 
                                              self.check_numeric(longitude_inicio), 
                                              self.check_numeric(latitude_fim), 

@@ -2,6 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /api
 
+ENV PYTHONUNBUFFERED=1
+
 COPY requirements.txt .
 
 RUN apt-get update && apt-get install -y \
@@ -26,6 +28,4 @@ COPY src src
 
 EXPOSE 8010
 
-ENV PYTHONPATH=/api
-
-CMD ["uvicorn", "main_api:app", "--host", "0.0.0.0", "--port", "8010"]
+CMD ["fastapi", "run", "main_api.py", "--host", "0.0.0.0", "--port", "8010"]

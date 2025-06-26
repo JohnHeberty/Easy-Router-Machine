@@ -69,13 +69,13 @@ class SQliteConnectionHandler:
             self.__conn_sqlite.enable_load_extension(True)
 
             if self.flag_exec_windows:
-                print("WINDOWS")
+                print("EXECUTANDO API NO: WINDOWS")
                 os.chdir(self.mod_path)
                 self.__conn_sqlite.load_extension(f'{self.mod_path}/mod_spatialite.dll')
                 self.__conn_sqlite.execute('SELECT load_extension("mod_spatialite.dll")')
                 os.chdir(self.path_init)
             else:
-                print("LINUX")
+                print("EXECUTANDO API NO: LINUX")
                 self.__conn_sqlite.load_extension(f'{self.mod_path}/mod_spatialite.so')
                 self.__conn_sqlite.execute('SELECT load_extension("mod_spatialite.so")')
 

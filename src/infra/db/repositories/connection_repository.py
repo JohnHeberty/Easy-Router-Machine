@@ -7,10 +7,8 @@ from src.infra.db.interfaces.connection_repository_interface import IDatabaseRep
 class DatabaseRepository(IDatabaseRepository):
     
     @classmethod
-    def run_query(cls, query: str, will_return: bool = False):
+    def run_query(cls, db_handler, query: str, will_return: bool = False):
         try:
-            db_handler = SQliteConnectionHandler()
-
             with db_handler as conn:
                 if will_return:
                     cursor = conn.cursor()
@@ -29,3 +27,11 @@ class DatabaseRepository(IDatabaseRepository):
             print(str(e))
             print(f'Erro ao executar a query: {query}\'')
             return False
+        
+    def get_connection_db(self):
+        try:
+            db_conection = SQliteConnectionHandler()
+            return db_conection
+        except Exception as e:
+            print(str(e))
+            print("ERRO AO OBTER CONEXAO")
