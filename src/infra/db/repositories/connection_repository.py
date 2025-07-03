@@ -1,8 +1,9 @@
 import pandas as pd #type: ignore
 import logging
 
-from src.infra.db.settings.connection import SQliteConnectionHandler
 from src.infra.db.interfaces.connection_repository_interface import IDatabaseRepository
+from src.infra.db.settings.connection import SQliteConnectionHandler
+from src.infra.config import configSQlite
 
 class DatabaseRepository(IDatabaseRepository):
     
@@ -30,7 +31,7 @@ class DatabaseRepository(IDatabaseRepository):
         
     def get_connection_db(self):
         try:
-            db_conection = SQliteConnectionHandler()
+            db_conection = SQliteConnectionHandler(configSQlite["path_database"])
             return db_conection
         except Exception as e:
             print(str(e))

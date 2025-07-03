@@ -4,7 +4,6 @@ import os
 
 from src.infra.db.interfaces.connection_repository_interface import IDatabaseRepository
 from src.infra.db.interfaces.manager_task_interface import IManagerTask
-from src.infra.db.settings.connection import SQliteConnectionHandler
 
 class Task:
     def __init__(self, query, return_):

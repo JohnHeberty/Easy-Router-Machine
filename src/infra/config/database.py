@@ -13,7 +13,8 @@ configPG = {
 }
 
 configSQlite = {
-    "path_database"  : os.getenv("PATH_DATABASE_SQLITE"),
+    "path_database"  : os.getenv("PATH_DATABASE_ROUTER_SQLITE"),
+    "path_database_locales" : os.getenv("PATH_DATABASE_LOCALES_SQLITE"),
 }
 
 mod_spatialite = {

@@ -2,7 +2,6 @@ from abc import abstractmethod, ABC
 from typing import Optional
 import pandas as pd #type: ignore 
 from sqlite3 import Connection
-from src.infra.db.settings.connection import SQliteConnectionHandler
 
 class IDatabaseRepository(ABC):
     @classmethod

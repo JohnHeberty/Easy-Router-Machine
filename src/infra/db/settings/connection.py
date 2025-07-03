@@ -46,9 +46,9 @@ class PGconnectionHandler(IDBConnectionHandler):
 
 
 class SQliteConnectionHandler:
-    def __init__(self) -> None:
+    def __init__(self, db_path) -> Optional[sqlite3.Connection]:
         self.__conn_sqlite: Optional[sqlite3.Connection] = None
-        self.db_path = configSQlite["path_database"]
+        self.db_path = db_path 
         self.mod_path = mod_spatialite["mod_spatialite_path"]
         self.flag_exec_windows = False
 
@@ -58,7 +58,6 @@ class SQliteConnectionHandler:
         self.path_init = os.getcwd()
 
 
-        
     def __create_conn_sqlite(self) -> Optional[sqlite3.Connection]:
         """Cria conexão com o banco SQLite."""
         try:
@@ -97,3 +96,4 @@ class SQliteConnectionHandler:
         if self.__conn_sqlite:
             self.__conn_sqlite.close()
             self.__conn_sqlite = None
+
