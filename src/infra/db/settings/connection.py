@@ -67,6 +67,8 @@ class SQliteConnectionHandler:
             )
             self.__conn_sqlite.enable_load_extension(True)
 
+
+
             if self.flag_exec_windows:
                 print("EXECUTANDO API NO: WINDOWS")
                 os.chdir(self.mod_path)
@@ -77,6 +79,11 @@ class SQliteConnectionHandler:
                 print("EXECUTANDO API NO: LINUX")
                 self.__conn_sqlite.load_extension(f'{self.mod_path}/mod_spatialite.so')
                 self.__conn_sqlite.execute('SELECT load_extension("mod_spatialite.so")')
+
+            #Isso é preciso se acaso necessário usar conversor de SRDI
+            #path_proj= r'src\infra\db\settings\proj.db'
+            #query_proj = f"SELECT PROJ_SetDatabasePath('{path_proj}');"
+            #self.__conn_sqlite.execute(query_proj)
 
             return self.__conn_sqlite
         

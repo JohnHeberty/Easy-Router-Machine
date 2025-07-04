@@ -29,9 +29,17 @@ class DatabaseRepository(IDatabaseRepository):
             print(f'Erro ao executar a query: {query}\'')
             return False
         
-    def get_connection_db(self):
+    def get_connection_db_routes(self):
         try:
             db_conection = SQliteConnectionHandler(configSQlite["path_database"])
+            return db_conection
+        except Exception as e:
+            print(str(e))
+            print("ERRO AO OBTER CONEXAO")
+
+    def get_connection_db_locales(self):
+        try:
+            db_conection = SQliteConnectionHandler(configSQlite["path_database_locales"])
             return db_conection
         except Exception as e:
             print(str(e))

@@ -4,8 +4,8 @@ from src.infra.manager_task.singleton import SingletonMeta
 
 class TaskService(metaclass=SingletonMeta):
     '''Inicia uma unica task apos a primeira instância'''
-    def __init__(self, database_repository: IDatabaseRepository):
-        self.managerTask = ManagerTask(database_repository)
+    def __init__(self, database_repository_routes: IDatabaseRepository):
+        self.managerTask = ManagerTask(database_repository_routes)
         
     def get_worker(self) -> any:
         '''Retorna a instancia do ManagerTask'''

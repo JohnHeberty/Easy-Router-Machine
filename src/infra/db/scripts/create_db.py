@@ -20,6 +20,7 @@ class DatabaseInitializer:
                 cursor = self.conn.cursor()
                 cursor.executescript(table_infraestrutura_rodoviaria)
                 self.conn.commit()
+                self.conn.close()
                 print("Banco locales criado com sucesso.")
             else:
                 #print("Banco db_locales.sqlite já existe.")

@@ -8,3 +8,10 @@ class RoutesDTO(BaseModel):
     longitude_origem: str = Field(..., example="-49.205938")
     latitude_destino: str = Field(..., example="-16.807019")
     longitude_destino: str = Field(..., example="-49.234030")
+
+
+class InsertLocsDTO(BaseModel):
+    nome_localizacao: str = Field(..., example="Posto do fulano")
+    tipo: str = Field(..., example="Posto de combustíveis")
+    latitude: str = Field(..., example="-16.804450")
+    longitude: str = Field(..., example="-49.205938")

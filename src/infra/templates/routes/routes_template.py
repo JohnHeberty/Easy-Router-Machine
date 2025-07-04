@@ -45,3 +45,39 @@ WHERE
 	NodeFrom = o.Node_From AND NodeTo = d.Node_To
 
 '''
+
+postos_na_rota = '''
+    SELECT 
+        p.id, 
+        p.nome,
+        p.tipo,
+        AsGeoJSON(p.geom) as geojson
+    FROM 
+        infraestrutura_rodoviaria p
+    WHERE 
+        ST_Within(
+            p.geom,
+            ST_Buffer(ST_GeomFromText('{}', 4326), 0.0018) -- buffer ~200m em graus (aprox)
+        );
+'''
+
+
+postos_na_rota_backup = '''
+    SELECT 
+        p.id, 
+        p.nome, 
+        p.tipo
+        AsGeoJSON(p.geom) as geojson
+    FROM 
+        infraestrutura_rodoviaria p
+    WHERE 
+        ST_Within( -- funcao de comparação de geometrias
+            ST_Transform(p.geom, 3857),  -- primeira geometria
+            ST_Buffer(ST_Transform(ST_GeomFromText('{}', 4326), 3857 ), 200 ) -- segunda geometria(buffer)
+    );
+'''
+
+insert_loc_unique_query = '''
+    INSERT INTO infraestrutura_rodoviaria (nome, tipo, data_cadastro, geom)
+    VALUES ('{0}', '{1}', '{2}', ST_GeomFromText('{3}', 4326));
+'''

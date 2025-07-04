@@ -24,3 +24,4 @@ python-dotenv
 fastapi[standard]
 uvicorn[standard]
 psycopg2-binary
+shapely>=2.0.0

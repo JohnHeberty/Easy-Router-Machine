@@ -10,8 +10,12 @@ class IDatabaseRepository(ABC):
         Executa consultas no banco \n
         Pode retornar um Dataframe ou None
         '''
-    def get_connection_db(self) -> Optional[Connection]:
+    def get_connection_db_routes(self) -> Optional[Connection]:
         '''
-        Obtem a conexao do banco de dados
+        Obtem a conexao do banco de dados do banco de rotas
         '''
         
+    def get_connection_db_locales(self):
+        '''
+        Obtem a conexao do banco de dados do banco de localizações
+        '''

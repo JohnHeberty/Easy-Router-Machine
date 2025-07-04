@@ -6,9 +6,10 @@ from src.infra.db.interfaces.connection_repository_interface import IDatabaseRep
 from src.infra.db.interfaces.manager_task_interface import IManagerTask
 
 class Task:
-    def __init__(self, query, return_):
+    def __init__(self, query, return_, connection_id: int = 0):
         self.query = query
         self.return_ = return_
+        self.connection_id = connection_id
         self.result = None
         self.event = threading.Event()
 
@@ -17,14 +18,14 @@ class Task:
         self.event.set()
 
 class ManagerTask(IManagerTask):
-    def __init__(self, database: IDatabaseRepository):
+    def __init__(self, databases: IDatabaseRepository):
         self.Jobs_at_Queue = queue.Queue()
         self.InfoWorkers = {}
-        self.database = database
+        self.databases = databases
         self.StartWorker()
 
-    def add_task(self, query: str, return_: bool):
-        task = Task(query, return_)
+    def add_task(self, query: str, return_: bool, connection_id: int = 0):
+        task = Task(query, return_, connection_id)
         self.Jobs_at_Queue.put(task)
         return task
 
@@ -47,16 +48,25 @@ class ManagerTask(IManagerTask):
                         break
 
     def Worker(self, id, Jobs_at_Queue):
-        db_handler = self.database.get_connection_db()
+        db_routes = self.databases.get_connection_db_routes()
+        db_locales = self.databases.get_connection_db_locales()
+
         self.InfoWorkers[id]["OK"] = True
         try:
             while True:
                 task = Jobs_at_Queue.get()
+
+                if task.connection_id == 0:
+                    db_conn = db_routes
+                elif task.connection_id == 1:
+                    db_conn = db_locales
+
                 if task.return_:
-                    dataframe = self.database.run_query(db_handler, task.query, task.return_)
-                    task.set_result(dataframe)
+                    result = self.databases.run_query(db_conn, task.query, task.return_)
+                    task.set_result(result)
                 else:
-                    status = self.database.run_query(db_handler, task.query, task.return_)
+                    status = self.databases.run_query(db_conn, task.query, task.return_)
                     task.set_result(status)
+
         finally:
-            db_handler.close()
+            db_routes.close()
