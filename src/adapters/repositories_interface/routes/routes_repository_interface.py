@@ -16,3 +16,9 @@ class IInsertLocRepository(ABC):
     @abstractmethod    
     def insert_loc_unique(self, nome, tipo, data_cadastro, geom_point) -> pd.DataFrame:
         '''Insere uma localidade no banco de dados'''
+
+class IUploadDfLocsRepository(ABC):
+
+    @abstractmethod    
+    def insert_loc_unique(self, nome, tipo, data_cadastro, geom_point) -> pd.DataFrame:
+        '''Insere uma localidade no banco de dados'''
