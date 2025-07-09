@@ -3,8 +3,7 @@ import pandas as pd
 import logging
 
 from src.adapters.repositories_interface.routes.routes_repository_interface import IRoutesRepository
-from src.adapters.repositories_interface.routes.routes_repository_interface import IInsertLocRepository
-from src.adapters.repositories_interface.routes.routes_repository_interface import IUploadDfLocsRepository
+
 
 
 from src.infra.db.interfaces.manager_task_interface import IManagerTask
@@ -40,41 +39,3 @@ class RoutesRepository(IRoutesRepository):
             print(str(e))
             return pd.DataFrame({"STATUS": False, "DADOS": [], "ERRO": str(e)})
 
-class InsertLocRepository(IInsertLocRepository):
-    def __init__(self, manager_task: IManagerTask) -> None:
-        self.manager = manager_task  
-
-    def insert_loc_unique(self, nome, tipo, data_cadastro, geom_point) -> pd.DataFrame:
-        '''Insere uma localidade no banco de dados'''
-        try:
-            query = insert_loc_unique_query.format(nome, tipo, data_cadastro, geom_point)
-            data = self.manager.add_task(query, False, 1)
-            data.event.wait()
-            flag = data.result
-
-            return flag
-        
-        except Exception as e:
-            logging.error(f'Erro ao inserir local: {str(e)}')
-            print(str(e))
-            return False
-        
-
-class UploadDfLocsRepository(IUploadDfLocsRepository):
-    def __init__(self, manager_task: IManagerTask) -> None:
-        self.manager = manager_task  
-
-    def insert_loc_unique(self, nome, tipo, data_cadastro, geom_point) -> pd.DataFrame:
-        '''Insere uma localidade no banco de dados'''
-        try:
-            query = insert_loc_unique_query.format(nome, tipo, data_cadastro, geom_point)
-            data = self.manager.add_task(query, False, 1)
-            data.event.wait()
-            flag = data.result
-
-            return flag
-        
-        except Exception as e:
-            logging.error(f'Erro ao inserir local: {str(e)}')
-            print(str(e))
-            return False

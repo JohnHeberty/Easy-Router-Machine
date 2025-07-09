@@ -8,7 +8,6 @@ import warnings
 from src.adapters.controllers.docs.docs_controller import router as router_docs
 from src.adapters.controllers.routes.routes_controller import router as routes_router
 from src.app.helpers.api_functions import get_prefix_version, get_version
-from src.infra.db.scripts.create_db import DatabaseInitializer
 
 from src.adapters.task_service.task import TaskService
 
@@ -31,11 +30,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.on_event("startup")
-def startup_event():
-    db_init = DatabaseInitializer()
-    db_init.create_db_locales()
 
 
 @main_router.get("/", tags=['API Service'])

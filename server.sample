@@ -1,0 +1,42 @@
+####################################################################################################################################
+## ✅✅ CONFIGURAÇÕES .ENV DA EXECUÇÃO DA APLICAÇÃO POR FORA DO CONTAINER ( WINDOWS OU LINUX) ✅✅
+####################################################################################################################################
+
+
+# -------------------------------
+# 🔧 CONFIGURAÇÃO DE CAMINHOS
+# -------------------------------
+
+# Caminho completo para o banco de dados ROUTER (usado pela aplicação).
+# ❗ Quando estiver usando o contêiner Docker, este caminho DEVE SER idêntico ao SQLITE_CONTAINER_PATH + nome do arquivo.
+# ✅ Em execução local (fora do contêiner), esse caminho deve apontar para o arquivo real no sistema de arquivos do host.
+# Exemplo de uso local (Windows):
+PATH_DATABASE_ROUTER_SQLITE="data/processed/streets/streets.sqlite"
+
+# -------------------------------
+# 🚀 CONFIGURAÇÃO DA API
+# -------------------------------
+
+# Versão da imagem da API (usada para nomear e versionar o contêiner Docker)
+API_ROUTER_VERSION=v0.1.0
+
+# Define se a API deve ser exposta com prefixo (ex: /api/v0 caso seja a versão seja: v0.1.0, /api/v1 caso seja a versão seja: v1.1.0)
+API_PREFIX=true
+
+# Usuário da autenticação HTTP Basic (usado para docs e requisições)
+API_USER=equipe_cca
+
+# Senha da autenticação HTTP Basic
+API_PASS=Cca@2024
+
+# -------------------------------
+# ⚙️ CONFIGURAÇÕES DO SISTEMA
+# -------------------------------
+
+# Define se o sistema está sendo executado em Windows.
+# true = executando localmente em Windows (usa caminhos e DLLs do Windows)
+# false = executando em Linux (Docker ou servidor)
+WINDOWS_EXECUTE=true
+
+
+

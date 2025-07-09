@@ -50,11 +50,18 @@ class SQliteConnectionHandler:
         self.__conn_sqlite: Optional[sqlite3.Connection] = None
         self.db_path = db_path 
         self.mod_path = mod_spatialite["mod_spatialite_path"]
+
+
         self.flag_exec_windows = False
 
         if api_config["execute_windows"] in ("True", "true", True):
             self.flag_exec_windows = True 
-            
+        
+        if self.flag_exec_windows or not self.mod_path:
+            self.mod_path_windows = os.path.abspath(
+                os.path.join("src", "infra", "spatialite", "loadable-modules")
+            )
+
         self.path_init = os.getcwd()
 
 
@@ -71,8 +78,8 @@ class SQliteConnectionHandler:
 
             if self.flag_exec_windows:
                 print("EXECUTANDO API NO: WINDOWS")
-                os.chdir(self.mod_path)
-                self.__conn_sqlite.load_extension(f'{self.mod_path}/mod_spatialite.dll')
+                os.chdir(self.mod_path_windows)
+                self.__conn_sqlite.load_extension(f'{self.mod_path_windows}\mod_spatialite.dll')
                 self.__conn_sqlite.execute('SELECT load_extension("mod_spatialite.dll")')
                 os.chdir(self.path_init)
             else:

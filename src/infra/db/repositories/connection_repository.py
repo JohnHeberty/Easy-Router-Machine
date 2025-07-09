@@ -37,10 +37,3 @@ class DatabaseRepository(IDatabaseRepository):
             print(str(e))
             print("ERRO AO OBTER CONEXAO")
 
-    def get_connection_db_locales(self):
-        try:
-            db_conection = SQliteConnectionHandler(configSQlite["path_database_locales"])
-            return db_conection
-        except Exception as e:
-            print(str(e))
-            print("ERRO AO OBTER CONEXAO")

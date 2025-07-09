@@ -1,1 +1,0 @@
-UPDATE router_time SET Algorithm = 'A*';

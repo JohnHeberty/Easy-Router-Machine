@@ -49,7 +49,6 @@ class ManagerTask(IManagerTask):
 
     def Worker(self, id, Jobs_at_Queue):
         db_routes = self.databases.get_connection_db_routes()
-        db_locales = self.databases.get_connection_db_locales()
 
         self.InfoWorkers[id]["OK"] = True
         try:
@@ -58,8 +57,6 @@ class ManagerTask(IManagerTask):
 
                 if task.connection_id == 0:
                     db_conn = db_routes
-                elif task.connection_id == 1:
-                    db_conn = db_locales
 
                 if task.return_:
                     result = self.databases.run_query(db_conn, task.query, task.return_)

@@ -15,7 +15,3 @@ class IDatabaseRepository(ABC):
         Obtem a conexao do banco de dados do banco de rotas
         '''
         
-    def get_connection_db_locales(self):
-        '''
-        Obtem a conexao do banco de dados do banco de localizações
-        '''
