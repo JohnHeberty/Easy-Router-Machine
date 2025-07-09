@@ -1,27 +1,13 @@
 BeautifulSoup4
 pySmartDL
-
-# BASE PROJECT
-# cookiecutter-data-science
-# black
-# flake8
-# ipython
-# isort
 jupyterlab
 loguru
 matplotlib
-# mkdocs
 notebook
 numpy
 pandas
 pip
-# pytest
 python-dotenv
-# scikit-learn
-# tqdm
-# typer
-# -e .
 fastapi[standard]
-uvicorn[standard]
 psycopg2-binary
 shapely>=2.0.0
