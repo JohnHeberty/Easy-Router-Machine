@@ -193,3 +193,5 @@ cython_debug/
 # DB
 *.sqlite
 *.sqlite-journal
+*.env
+*.env
